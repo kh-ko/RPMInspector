@@ -18,6 +18,13 @@ Item{
 
     height: 80; width: parent.width
 
+    Connections {
+            target: reportModel
+            onSignalEventRefreshItem: {
+                checkBtn.checked = reportModel.onCommandIsCheck(rowItem.rowIdx)
+            }
+        }
+
     states: State {
         name: "visibleCheckBox"; when: rowItem.visibleCheckBox
         PropertyChanges { target: checkBox; x: 0}

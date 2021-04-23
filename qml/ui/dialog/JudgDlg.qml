@@ -54,7 +54,7 @@ Popup {
 
                 color: dialog.isSucc ? "#FFFFFF" : "#F7FF00"
 
-                text: dialog.isSucc ? "합격" : "불량"
+                text: dialog.isSucc ? "합격" : "불합격"
             }
         }
 

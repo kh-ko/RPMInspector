@@ -26,6 +26,7 @@ signals:
     void   signalEventChangedPDNum (QString   value);
     void   signalEventChangedPDName(QString   value);
     void   signalEventRefreshList  (               );
+    void   signalEventRefreshItem  (               );
 
 public slots:
     Q_INVOKABLE int onCommandGetListSize()
@@ -105,12 +106,24 @@ public slots:
         reloadList(mLastDateTime);
     }
 
+    Q_INVOKABLE void onCommandAllSelect()
+    {
+        for(int i = 0; i < mReportRowList.size(); i ++)
+        {
+            mReportRowList[i].mCheck =true;
+        }
+
+        emit signalEventRefreshItem();
+    }
+
     Q_INVOKABLE void onCommandClearCheckList()
     {
         for(int i = 0; i < mReportRowList.size(); i ++)
         {
             mReportRowList[i].mCheck =false;
         }
+
+        emit signalEventRefreshItem();
     }
 
     Q_INVOKABLE void onCommandAddReport(QString loadRPM, QString nonLoadRPM, bool isSucc)

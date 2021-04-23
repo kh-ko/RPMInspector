@@ -264,7 +264,7 @@ Item {
             UiText{
                 id : loadLabel
                 anchors.top : parent.top; anchors.topMargin: 20; anchors.left: parent.left; anchors.leftMargin: 20
-                text: (loadMeasureBox.loadMeasureModel.mNM / 1000).toLocaleString(FontManager.locale, 'f', 0) + qsTr(" kgf·cm 부하(") + loadMeasureBox.loadMeasureModel.mConditionFrom.toLocaleString(FontManager.locale, 'f', 0) + ")"
+                text: "" + (loadMeasureBox.loadMeasureModel.mNM / 1000) + qsTr(" kgf·cm 부하(") + loadMeasureBox.loadMeasureModel.mConditionFrom.toLocaleString(FontManager.locale, 'f', 0) + ")"
             }
 
             Item{

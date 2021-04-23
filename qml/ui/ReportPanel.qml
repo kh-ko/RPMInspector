@@ -272,7 +272,7 @@ Item {
         UiButton{
             id : cancelBtn
             height: 100; width: 240
-            anchors.bottom: parent.bottom; anchors.bottomMargin: 30; anchors.right: removeBtn.left; anchors.rightMargin: 30
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 30; anchors.right: allSelectBtn.left; anchors.rightMargin: 30
             textColor: "#9EAEC2"
             text: qsTr("취소")
             visible: panel.isRemoveUI
@@ -282,6 +282,22 @@ Item {
 
             onClicked: {
                 panel.isRemoveUI = false
+            }
+        }
+
+        UiButton{
+            id : allSelectBtn
+            height: 100; width: 240
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 30; anchors.right: removeBtn.left; anchors.rightMargin: 30
+            textColor: "#9EAEC2"
+            text: qsTr("전체선택")
+            visible: panel.isRemoveUI
+
+            norImage: "image/n-btn-bg.png"
+            pressImage: "image/n-btn-press-bg.png"
+
+            onClicked: {
+                panel.reportModel.onCommandAllSelect()
             }
         }
 
