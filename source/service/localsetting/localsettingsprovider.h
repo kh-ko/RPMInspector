@@ -492,6 +492,16 @@ private:
             }
         }
 
+        for(int i = 0; i < mPDSettingList.size(); i ++)
+        {
+            PDSettingDto pdSetting = mPDSettingList[i];
+
+            if(pdSetting.mPDName == newSetting.mPDName)
+            {
+                return  "같은 제품이름이 이미 존재합니다.";
+            }
+        }
+
         mPDSettingList.append(newSetting);
 
         mpSetting->setValue(mSettingPDModelKey.arg(newSetting.mPDNum)                , newSetting.mModel                  );

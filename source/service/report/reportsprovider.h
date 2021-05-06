@@ -238,15 +238,15 @@ public:
         {
             if(date.endsWith("년"))
             {
-                writerInfo.mYear = date.toInt();
+                writerInfo.mYear = date.left(date.length() - 1).toInt();
             }
             if(date.endsWith("월"))
             {
-                writerInfo.mMonth = date.toInt();
+                writerInfo.mMonth = date.left(date.length() - 1).toInt();
             }
             if(date.endsWith("일"))
             {
-                writerInfo.mDay = date.toInt();
+                writerInfo.mDay = date.left(date.length() - 1).toInt();
             }
         }
 
@@ -317,8 +317,10 @@ public:
 
             writeNumbering(&report, today.toString(DATE_MONTH_FMT));
 
+            //qDebug() << "today = " << today.toString(DATE_MONTH_FMT) << ", saveDate = " << pLSettingSP->mWriterInfo.mSaveDate;
+
             if(today.toString(DATE_MONTH_FMT) == pLSettingSP->mWriterInfo.mSaveDate)
-                writeWriterInfo(&report, writerInfo);
+                writeWriterInfo(&report, pLSettingSP->mWriterInfo);
         }
 
 
