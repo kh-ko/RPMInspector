@@ -134,8 +134,8 @@ public slots:
         reloadList(mLastDateTime);
     }
 
-    void onChangedPDSetting(QString oldPDNum, PDSettingDto newSetting){
-        pReportSP->editReportHeader(mLastDateTime.date(), oldPDNum,  newSetting);
+    void onChangedPDSetting(QString oldPDNum, QString oldPdName, PDSettingDto newSetting){
+        pReportSP->editReportHeader(mLastDateTime.date(), oldPdName,  newSetting);
     }
 
     void onChangedSelectPDSetting(PDSettingDto dto)
@@ -150,8 +150,8 @@ public slots:
         pRpmSP->loadRPMTable();
     }
 
-    void onDeletedPDSetting(QString pdNum){
-        pReportSP->removeReport(pdNum);
+    void onDeletedPDSetting(QString pdNum, QString pdName){
+        pReportSP->removeReport(pdName);
     }
 
     void onTimeTick(QDateTime now)

@@ -69,7 +69,7 @@ public:
 
     QString addReportRow(QDate today, PDSettingDto pdSetting, QString loadRPM, QString nonLoadRPM, QString judg)
     {
-        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDNum);
+        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDName);
 
         if(QFile::exists(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(fileName)) == false)
         {
@@ -113,7 +113,7 @@ public:
     {
         QList<ReportRowDto> remainRowList;
 
-        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDNum);
+        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDName);
 
         if(QFile::exists(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(fileName)) == false)
         {
@@ -171,21 +171,21 @@ public:
         return "";
     }
 
-    QString editReportHeader(QDate today, QString pdNum, PDSettingDto newSetting)
+    QString editReportHeader(QDate today, QString pdName, PDSettingDto newSetting) // check
     {
-        QString oldFileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdNum);
-        QString newFileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(newSetting.mPDNum);
+        QString oldFileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdName);
+        QString newFileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(newSetting.mPDName);
 
-        if(pdNum != newSetting.mPDNum)
+        if(pdName != newSetting.mPDName)
         {
             if(QFile::exists(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(oldFileName)) == false)
             {
-                qDebug() << "[ReportSProvider::editReportHeader] can not found old file" << today.toString(DATE_MONTH_FMT) << "-"<< pdNum;
+                qDebug() << "[ReportSProvider::editReportHeader] can not found old file" << today.toString(DATE_MONTH_FMT) << "-"<< pdName;
             }
 
             if(QFile::exists(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(newFileName)) == true)
             {
-                qDebug() << "[ReportSProvider::editReportHeader] already exist new file" << today.toString(DATE_MONTH_FMT) << "-"<< newSetting.mPDNum;
+                qDebug() << "[ReportSProvider::editReportHeader] already exist new file" << today.toString(DATE_MONTH_FMT) << "-"<< newSetting.mPDName;
                 return "제품의 엑셀파일이 이미 존재합니다.";
             }
 
@@ -206,10 +206,78 @@ public:
         return "";
     }
 
-    void removeReport(QString pdNum)
+    ReportWriterInfoDto readWriterInfo(QDate today) // check
+    {
+        ReportWriterInfoDto writerInfo;
+        QString fileName;
+        qDebug() << "[ReportSProvider::readWriterInfo]";
+
+        QDir dir(FileDef::REPORT_DIR());
+        QStringList fileList = dir.entryList(QStringList() << QString("%1-*.xlsx").arg(today.toString(DATE_MONTH_FMT)),QDir::Files,QDir::SortFlag::Name);
+
+        if(fileList.size() < 1)
+            return writerInfo;
+
+        fileName = fileList[0];
+
+        qDebug() << "[ReportSProvider::readWriterInfo]fileName = " << fileName;
+
+        QXlsx::Document report(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(fileName));
+
+        if(report.load() == false)
+        {
+            qDebug() << "[ReportSProvider::load]" << "File load failed";
+
+            return writerInfo;
+        }
+
+        QStringList dateList = report.read(5, 14).toString().split(" ");
+        writerInfo.mWriter = report.read(6, 3).toString();
+
+        foreach(QString date, dateList)
+        {
+            if(date.endsWith("년"))
+            {
+                writerInfo.mYear = date.toInt();
+            }
+            if(date.endsWith("월"))
+            {
+                writerInfo.mMonth = date.toInt();
+            }
+            if(date.endsWith("일"))
+            {
+                writerInfo.mDay = date.toInt();
+            }
+        }
+
+        return writerInfo;
+    }
+
+    void setWriterInfo(QDate today, ReportWriterInfoDto writerInfo) // check
+    {
+        qDebug() << "[ReportSProvider::setWriterInfo]";
+
+        QDir dir(FileDef::REPORT_DIR());
+        QStringList fileList = dir.entryList(QStringList() << QString("%1-*.xlsx").arg(today.toString(DATE_MONTH_FMT)),QDir::Files,QDir::SortFlag::Name);
+
+        foreach(QString fileName, fileList)
+        {
+            QXlsx::Document report(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(fileName));
+
+            if(report.load() == false)
+            {
+                qDebug() << "[ReportSProvider::setWriterInfo]" << "File load failed";
+                continue;
+            }
+
+            writeWriterInfo(&report, writerInfo);
+        }
+    }
+
+    void removeReport(QString pdName)  // check
     {
         QDir dir(FileDef::REPORT_DIR());
-        QStringList fileList = dir.entryList(QStringList() << QString("*-%1.xlsx").arg(pdNum),QDir::Files,QDir::SortFlag::Name);
+        QStringList fileList = dir.entryList(QStringList() << QString("*-%1.xlsx").arg(pdName),QDir::Files,QDir::SortFlag::Name);
 
         foreach(QString file, fileList)
         {
@@ -223,7 +291,7 @@ public:
 
         bool isNewFile = false;
         QList<ReportRowDto> list;
-        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDNum);
+        QString fileName = QString("%1-%2.xlsx").arg(today.toString(DATE_MONTH_FMT)).arg(pdSetting.mPDName);
 
         if(QFile::exists(QString("%1/%2").arg(FileDef::REPORT_DIR()).arg(fileName)) == false)
         {
@@ -244,7 +312,15 @@ public:
         }
 
         if(isNewFile)
+        {
+            ReportWriterInfoDto writerInfo;
+
             writeNumbering(&report, today.toString(DATE_MONTH_FMT));
+
+            if(today.toString(DATE_MONTH_FMT) == pLSettingSP->mWriterInfo.mSaveDate)
+                writeWriterInfo(&report, writerInfo);
+        }
+
 
         writeHeader(&report, pdSetting);
 
@@ -296,6 +372,18 @@ private:
             xlsxFile->write(rowIdx + 3, 5, QString("%L1~\n%L2\n이하").arg(setting.mNonLoadConditionFrom).arg(setting.mNonLoadConditionTo));
             xlsxFile->write(rowIdx + 3, 12, QString("%L1\n이상").arg(setting.mLoadCondition));
             xlsxFile->write(rowIdx + 3, 13, QString("%L1~\n%L2\n이하").arg(setting.mNonLoadConditionFrom).arg(setting.mNonLoadConditionTo));
+        }
+
+        xlsxFile->save();
+    }
+
+    void writeWriterInfo(QXlsx::Document *xlsxFile, ReportWriterInfoDto info)
+    {
+        for(int i = 0; i < 10; i ++)
+        {
+            int rowIdx = (40 * i) + 5;
+            xlsxFile->write(rowIdx, 14,QString("%1년 %2월 %3일").arg(info.mYear).arg(info.mMonth).arg(info.mDay));
+            xlsxFile->write(rowIdx+1, 3, info.mWriter);
         }
 
         xlsxFile->save();

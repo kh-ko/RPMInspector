@@ -319,6 +319,23 @@ Item {
         }
 
         UiButton{
+            id : writerInfoBtn
+            height: 100; width: 240
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 30; anchors.right: usbSaveBtn.left; anchors.rightMargin: 30
+            textColor: "#9EAEC2"
+            text: qsTr("작성정보")
+            visible: !panel.isRemoveUI
+
+            norImage: "image/n-btn-bg.png"
+            pressImage: "image/n-btn-press-bg.png"
+
+            onClicked: {
+                var dlg = writerInfoDlg.createObject(panel, {"baseWindow" : panel.baseWindow})
+                dlg.open()
+            }
+        }
+
+        UiButton{
             id : usbSaveBtn
             height: 100; width: 240
             anchors.bottom: parent.bottom; anchors.bottomMargin: 30; anchors.right: selRemoveBtn.left; anchors.rightMargin: 30
@@ -381,6 +398,13 @@ Item {
         id : usbSaveDlg
 
         USBSaveDlg{
+        }
+    }
+
+    Component{
+        id : writerInfoDlg
+
+        WriterInfoDlg{
         }
     }
 

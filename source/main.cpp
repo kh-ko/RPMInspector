@@ -14,6 +14,7 @@
 #include "source/qmlmodel/dialog/qmlpdsettingdlgmodel.h"
 #include "source/qmlmodel/dialog/qmlusbsavedlgmodel.h"
 #include "source/qmlmodel/dialog/qmlmeasurecfgdlgmodel.h"
+#include "source/qmlmodel/dialog/qmlwriterinfodlgmodel.h"
 #include "qml/control/chart/linechart/linechartdata.h"
 #include "qml/control/chart/linechart/loglinechartdata.h"
 
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<DspCmdDto>();
     qRegisterMetaType<RPMTableDto>();
     qRegisterMetaType<MeasureConfigDto>();
+    qRegisterMetaType<ReportWriterInfoDto>();
 
     qmlRegisterType<QmlDevPanelModel>("QmlDevPanelModel", 1, 0, "QmlDevPanelModel");
     qmlRegisterType<QmlMeasureModel>("QmlMeasureModel", 1, 0, "QmlMeasureModel");
@@ -62,6 +64,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<QmlPDSettingDlgModel>("QmlPDSettingDlgModel", 1, 0, "QmlPDSettingDlgModel");
     qmlRegisterType<QmlUSBSaveDlgModel>("QmlUSBSaveDlgModel", 1, 0, "QmlUSBSaveDlgModel");
     qmlRegisterType<QmlMeasureCfgDlgModel>("QmlMeasureCfgDlgModel", 1, 0, "QmlMeasureCfgDlgModel");
+    qmlRegisterType<QmlWriterInfoDlgModel>("QmlWriterInfoDlgModel", 1, 0, "QmlWriterInfoDlgModel");
+
     qmlRegisterType<LineChartData>("LineChartData", 1, 0, "LineChartData");
     qmlRegisterType<LogLineChartData>("LogLineChartData", 1, 0, "LogLineChartData");
 

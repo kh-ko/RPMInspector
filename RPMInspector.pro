@@ -127,6 +127,7 @@ HEADERS += \
     source/qmlmodel/dialog/qmlpdlistdlgmodel.h \
     source/qmlmodel/dialog/qmlpdsettingdlgmodel.h \
     source/qmlmodel/dialog/qmlusbsavedlgmodel.h \
+    source/qmlmodel/dialog/qmlwriterinfodlgmodel.h \
     source/qmlmodel/qmldevpanelmodel.h \
     source/qmlmodel/qmlmeasuremodel.h \
     source/qmlmodel/qmlreportmodel.h \
@@ -145,6 +146,7 @@ HEADERS += \
     source/service/dto/measureconfigdto.h \
     source/service/dto/pdsettingdto.h \
     source/service/dto/reportrowdto.h \
+    source/service/dto/reportwriterinfodto.h \
     source/service/dto/rpmtabledto.h \
     source/service/includesvcdto.h \
     source/service/localsetting/localsettingsprovider.h \

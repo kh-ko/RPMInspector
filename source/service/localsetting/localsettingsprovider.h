@@ -68,6 +68,12 @@ private:
     const QString mMeasureCfgKgfcmGainKey               = "measureConfig/KgfcmGain"              ;
     const QString mMeasureCfgIsRtAdjVoltageKey          = "measureConfig/IsRtAdjVoltage"         ;
 
+    const QString mWriterInfoSaveDateKey                = "writerInfo/SaveDate"                  ;
+    const QString mWriterInfoWriterKey                  = "writerInfo/Writer"                    ;
+    const QString mWriterInfoYearKey                    = "writerInfo/Year"                      ;
+    const QString mWriterInfoMonthKey                   = "writerInfo/Month"                     ;
+    const QString mWriterInfoDayKey                     = "writerInfo/Day"                       ;
+
 public:
     static LocalSettingSProvider * getInstance()
     {
@@ -110,6 +116,7 @@ public:
     MeasureConfigDto    mMeasureConfig          ;
     PDSettingDto        mCurrPDSetting          ;
     QList<PDSettingDto> mPDSettingList          ;
+    ReportWriterInfoDto mWriterInfo             ;
 
     explicit LocalSettingSProvider(QObject * parent = nullptr):QObject(parent)
     {
@@ -155,17 +162,33 @@ public:
         emit signalEventChangedMeasureCfg(config);
     }
 
+    void setWriterInfo(ReportWriterInfoDto info)
+    {
+        internalSetWriterInfo(info);
+
+        emit signalEventChangedWriterInfo(info);
+    }
+
     QString editPDSetting(QString oldPdNum, PDSettingDto setting)
     {
+        QString oldPdName = "";
         setting.mVoltage = pRpmSP->convertBaseVoltage(setting.mLoadNM, mMeasureConfig.mKgfcmGain);
 
         qDebug() << "[debug][editPDSetting] pdNum = " << setting.mPDNum << ", RatedRPM = " << setting.mRatedRPM << ", LoadKgfcm = " << setting.mLoadNM << ", gain = " << mMeasureConfig.mKgfcmGain << ", voltage = " << setting.mVoltage;
+
+        foreach(PDSettingDto tempSetting, mPDSettingList)
+        {
+            if(tempSetting.mPDNum == oldPdNum)
+            {
+                oldPdName = tempSetting.mPDName;
+            }
+        }
 
         QString ret = internalEditPDSetting(oldPdNum, setting);
 
         if(ret == "")
         {
-            emit signalEventChangedPDSetting(oldPdNum, setting);
+            emit signalEventChangedPDSetting(oldPdNum, oldPdName, setting);
 
             if(mCurrPDSetting.mPDNum == oldPdNum)
             {
@@ -193,10 +216,20 @@ public:
 
     QString delPDSetting(QString pdNum)
     {
+        QString pdName = "";
+
+        foreach(PDSettingDto tempSetting, mPDSettingList)
+        {
+            if(tempSetting.mPDNum == pdNum)
+            {
+                pdName = tempSetting.mPDName;
+            }
+        }
+
         QString ret = internalDeletePDSetting(pdNum);
 
         if(ret == "")
-            emit signalEventDeletedPDSetting(pdNum);
+            emit signalEventDeletedPDSetting(pdNum, pdName);
 
         return ret;
     }
@@ -256,6 +289,12 @@ private:
         mMeasureConfig.mMeasureAvgRange         = mpSetting->value(mMeasureCfgMeasureAvgRangeKey        , mDefaultMeasureAvgRange        ).toLongLong();
         mMeasureConfig.mKgfcmGain               = mpSetting->value(mMeasureCfgKgfcmGainKey              , mDefaultKgfcmGain              ).toDouble();
         mMeasureConfig.mIsRtAdjVoltage          = mpSetting->value(mMeasureCfgIsRtAdjVoltageKey         , mDefaultIsRtAdjVoltage         ).toBool();
+
+        mWriterInfo.mSaveDate                   = mpSetting->value(mWriterInfoSaveDateKey               , ""                             ).toString();
+        mWriterInfo.mWriter                     = mpSetting->value(mWriterInfoWriterKey                 , ""                             ).toString();
+        mWriterInfo.mYear                       = mpSetting->value(mWriterInfoYearKey                   , 0                              ).toInt();
+        mWriterInfo.mMonth                      = mpSetting->value(mWriterInfoMonthKey                  , 0                              ).toInt();
+        mWriterInfo.mDay                        = mpSetting->value(mWriterInfoDayKey                    , 0                              ).toInt();
 
         QStringList keyList = mpSetting->allKeys();
         foreach(QString key, keyList)
@@ -319,6 +358,7 @@ private:
 
         internalSetMeasureConfig(mMeasureConfig);
         internalSetLastUSBSaveDate(mLastUSBSaveYear, mLastUSBSaveMonth);
+        internalSetWriterInfo(mWriterInfo);
     }
 
     void internalSetMeasureConfig(MeasureConfigDto config)
@@ -366,6 +406,17 @@ private:
 
         mpSetting->setValue(mCommInfoIpKey, dto.mIp  );
         mpSetting->setValue(mCommInfoPortKey , dto.mPort   );
+    }
+
+    void internalSetWriterInfo(ReportWriterInfoDto info)
+    {
+        mWriterInfo = info;
+
+        mpSetting->setValue(mWriterInfoSaveDateKey  , info.mSaveDate);
+        mpSetting->setValue(mWriterInfoWriterKey    , info.mWriter  );
+        mpSetting->setValue(mWriterInfoYearKey      , info.mYear    );
+        mpSetting->setValue(mWriterInfoMonthKey     , info.mMonth   );
+        mpSetting->setValue(mWriterInfoDayKey       , info.mDay     );
     }
 
     QString internalEditPDSetting(QString oldPdNum, PDSettingDto newSetting)
@@ -482,9 +533,10 @@ signals:
     void signalEventChangedLastUSBSaveDate(int year, int month);
     void signalEventChangedCommInfo(CommInfoDto dto);
     void signalEventChangedMeasureCfg(MeasureConfigDto dto);
-    void signalEventChangedPDSetting(QString oldPdNum, PDSettingDto dto);
+    void signalEventChangedWriterInfo(ReportWriterInfoDto dto);
+    void signalEventChangedPDSetting(QString oldPdNum, QString oldPdName, PDSettingDto dto);
     void signalEventAddedPDSetting(PDSettingDto dto);
-    void signalEventDeletedPDSetting(QString pdNum);
+    void signalEventDeletedPDSetting(QString pdNum, QString oldPdName);
     void signalEventChangedSelectPDSetting(PDSettingDto dto);
 
 private:

@@ -84,5 +84,6 @@
         <file>ui/image/lamp-red.png</file>
         <file>ui/dialog/JudgDlg.qml</file>
         <file>ui/image/confirm-box-bg.png</file>
+        <file>ui/dialog/WriterInfoDlg.qml</file>
     </qresource>
 </RCC>
