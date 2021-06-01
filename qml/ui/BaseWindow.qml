@@ -72,7 +72,7 @@ Window {
             y: 50 + logoImage.width
 
             rotation: 270
-            text: "v0.2.0"
+            text: "v0.2.1"
             font.pixelSize: 20
         }
     }
