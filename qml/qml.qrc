@@ -85,5 +85,6 @@
         <file>ui/dialog/JudgDlg.qml</file>
         <file>ui/image/confirm-box-bg.png</file>
         <file>ui/dialog/WriterInfoDlg.qml</file>
+        <file>control/keypad/UiKeypad.qml</file>
     </qresource>
 </RCC>

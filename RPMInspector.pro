@@ -121,6 +121,8 @@ HEADERS += \
     QXlsx/header/xlsxzipwriter_p.h \
     qml/control/chart/linechart/linechartdata.h \
     qml/control/chart/linechart/loglinechartdata.h \
+    qml/control/keypad/keypadcomposit.h \
+    qml/control/keypad/keypadmodel.h \
     source/globaldef/qmlenumdef.h \
     source/logger/nsdebug.h \
     source/qmlmodel/dialog/qmlmeasurecfgdlgmodel.h \

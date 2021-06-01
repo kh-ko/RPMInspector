@@ -17,6 +17,7 @@
 #include "source/qmlmodel/dialog/qmlwriterinfodlgmodel.h"
 #include "qml/control/chart/linechart/linechartdata.h"
 #include "qml/control/chart/linechart/loglinechartdata.h"
+#include "qml/control/keypad/keypadmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<LineChartData>("LineChartData", 1, 0, "LineChartData");
     qmlRegisterType<LogLineChartData>("LogLineChartData", 1, 0, "LogLineChartData");
+    qmlRegisterType<KeypadModel>("KeypadModel", 1, 0, "KeypadModel");
 
     qmlRegisterSingletonType<MouseEventSpy>("MouseEventSpy", 1, 0, "MouseEventSpy", MouseEventSpy::singletonProvider);
     qmlRegisterSingletonType(QUrl("qrc:/uiengine/FontManager.qml"), "FontManager", 1, 0, "FontManager");

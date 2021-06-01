@@ -5,6 +5,7 @@ import QtQuick.Controls 2.5
 import QmlEnumDef 1.0
 import EnumDef 1.0
 import FontManager 1.0
+import "./keypad/"
 
 Text {
     id : control
@@ -51,5 +52,5 @@ Text {
     }
 
     Component{ id : numberKeypad; UiNumberKeypad {}}
-    Component{ id : textKeypad  ; UiTextKeypad {}}
+    Component{ id : textKeypad  ; UiKeypad {}}
 }
